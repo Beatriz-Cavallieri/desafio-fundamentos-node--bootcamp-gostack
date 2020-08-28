@@ -15,10 +15,10 @@ class CreateTransactionService {
   }
 
   public execute({ title, value, type }: RequestInterface): Transaction {
+    const { total } = this.transactionsRepository.getBalance();
 
-    // conferir se há saldo
-    if ((type === 'outcome') && (value > this.transactionsRepository.getBalance().total)) {
-      // erro
+    if (type === 'outcome' && value > total) {
+      throw new Error('Insufficient balance for this transaction.')
     }
 
     const transaction = this.transactionsRepository.create({
